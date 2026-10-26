@@ -1,4 +1,4 @@
-# Valentina Schenberger Zanetta | Portfolio
+# Portfolio
 
 Bienvenidos al repositorio de mi portfolio personal. Soy estudiante de Ingeniería en Sistemas de Información en la UTN FRCU, enfocada en el desarrollo de software, la arquitectura de sistemas y el análisis funcional. 
 
