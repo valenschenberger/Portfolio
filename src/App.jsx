@@ -38,12 +38,11 @@ export default function App() {
           <div className="hero__orb" aria-hidden="true">
             <Orb
               backgroundColor="#ffffff"
-              colors={['#7aa7ff', '#a9b8d6', '#5f7bb8']}
+              colors={['#6366f1', '#06b6d4', '#10b981']}
               hoverIntensity={0.3}
             />
           </div>
           <div className="hero__content">
-            <span className="eyebrow">Ingeniería en Sistemas de Información · UTN FRCU</span>
             <h1 className="hero__title">Ingeniería y Desarrollo con Visión Integral</h1>
             <p className="hero__desc">
               Estudiante avanzada de Ingeniería en Sistemas de Información (UTN FRCU). Combino mi
