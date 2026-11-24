@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Orb from './components/Orb.jsx';
 
 const skills = [
@@ -19,9 +20,60 @@ const skills = [
   },
 ];
 
-const projects = [1, 2, 3];
+const projects = [
+  {
+    id: 'wayfinder',
+    title: 'WayFinder (App Integradora)',
+    description:
+      'Aplicación integradora de gestión turística desarrollada en equipo con arquitectura modular y foco en escalabilidad.',
+    technologies: ['C#', '.NET', 'Angular', 'SQL Server'],
+    link: 'https://github.com/Equipo-de-desarrollo-LSD/App',
+  },
+  {
+    id: 'catastro',
+    title: 'Sistema de Gestión Catastral',
+    description:
+      'Sistema de gestión catastral en Pascal. Incluye ABMC de contribuyentes y terrenos, cálculo automático de avalúos, estadísticas detalladas y reportes ordenados mediante árboles binarios y archivos.',
+    technologies: ['Pascal', 'Árboles Binarios', 'Archivos'],
+    link: 'https://github.com/valenschenberger/Proyecto-Catastro',
+  },
+  {
+    id: 'bilingue-interprete',
+    title: 'Bilingue-Interprete',
+    description:
+      'Intérprete robusto desarrollado en Pascal para un lenguaje de dominio específico (DSL) especializado en cálculo matricial avanzado y operaciones aritméticas de precisión.',
+    technologies: ['Pascal', 'DSL', 'Cálculo Matricial'],
+    link: 'https://github.com/valenschenberger/Bilingue-Interprete',
+  },
+  {
+    id: 'proyectos-octave',
+    title: 'Proyectos Octave',
+    description:
+      'Modelos de simulación en Octave usando métodos numéricos (FEM y Diferencias Finitas) para propagación de señales y redes neuronales.',
+    technologies: ['Octave', 'MATLAB', 'FEM', 'Redes Neuronales'],
+    link: 'https://github.com/valenschenberger/Proyectos-Octave',
+  },
+];
 
 export default function App() {
+  const [activeProject, setActiveProject] = useState(0);
+
+  const handlePrevProject = () => {
+    setActiveProject((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
+  const handleNextProject = () => {
+    setActiveProject((prev) => (prev + 1) % projects.length);
+  };
+
+  const getCardPosition = (index) => {
+    const total = projects.length;
+    const offset = (index - activeProject + total) % total;
+    if (offset === 0) return 'active';
+    if (offset === 1) return 'next';
+    if (offset === total - 1) return 'prev';
+    return 'back';
+  };
   return (
     <>
       <header className="nav">
@@ -79,21 +131,105 @@ export default function App() {
         <section className="projects" id="proyectos">
           <div className="projects__inner">
             <h2 className="section-title section-title--light">Proyectos</h2>
-            <div className="projects__grid">
-              {projects.map((n) => (
-                <article className="artifact" id={`proyecto-${n}`} key={n}>
-                  <div className="artifact__preview" />
-                  <h3>Proyecto {n}</h3>
-                  <p>Descripción breve del proyecto y tecnologías utilizadas.</p>
-                  <a href="#" className="artifact__link" id={`link-proyecto-${n}`}>Ver en GitHub →</a>
-                </article>
-              ))}
+            <div className="carousel" role="region" aria-label="Carrusel de proyectos">
+              <button
+                type="button"
+                className="carousel__btn carousel__btn--prev"
+                id="carousel-prev"
+                onClick={handlePrevProject}
+                aria-label="Proyecto anterior"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+
+              <div className="carousel__stage">
+                {projects.map((project, index) => {
+                  const position = getCardPosition(index);
+                  const isActive = position === 'active';
+                  return (
+                    <article
+                      className={`artifact artifact--${position}`}
+                      id={`proyecto-${project.id}`}
+                      key={project.id}
+                      onClick={() => {
+                        if (!isActive) setActiveProject(index);
+                      }}
+                      aria-current={isActive ? 'true' : undefined}
+                    >
+                      <div className="artifact__preview" />
+                      <h3>{project.title}</h3>
+                      <p>{project.description}</p>
+                      <ul className="artifact__tags">
+                        {project.technologies.map((tech) => (
+                          <li className="artifact__tag" key={tech}>{tech}</li>
+                        ))}
+                      </ul>
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="artifact__link"
+                        id={`link-proyecto-${project.id}`}
+                        tabIndex={isActive ? 0 : -1}
+                      >
+                        Ver en GitHub →
+                      </a>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                className="carousel__btn carousel__btn--next"
+                id="carousel-next"
+                onClick={handleNextProject}
+                aria-label="Proyecto siguiente"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+
+              <div className="carousel__dots" role="tablist" aria-label="Seleccionar proyecto">
+                {projects.map((project, index) => (
+                  <button
+                    type="button"
+                    key={project.id}
+                    role="tab"
+                    aria-selected={index === activeProject}
+                    aria-label={`Ver ${project.title}`}
+                    className={`carousel__dot${index === activeProject ? ' carousel__dot--active' : ''}`}
+                    onClick={() => setActiveProject(index)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
           <div className="contact" id="contacto">
             <h2 className="section-title section-title--light">Contacto</h2>
-            <p>tu@email.com · LinkedIn · GitHub</p>
+            <p>
+              <a href="mailto:valenschenberger@gmail.com">valenschenberger@gmail.com</a>
+              {' · '}
+              <a
+                href="https://www.linkedin.com/in/valentinaschenberger2004"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+              {' · '}
+              <a
+                href="https://github.com/valenschenberger"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            </p>
           </div>
         </section>
       </main>
